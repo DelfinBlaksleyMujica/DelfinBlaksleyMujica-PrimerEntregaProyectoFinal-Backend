@@ -73,8 +73,11 @@ productosRouter.post("/" , soloAdmins, ( req , res ) => {
 )
 
 productosRouter.put("/:id" , soloAdmins , async ( req , res ) => {
-    //logica
-    res.json()
+    const { id } = req.params;
+    const { title , descripcion , codigoDeProducto , price , thumbnail , stock } = req.body;
+    ProductService.updateProduct( id , title , descripcion , codigoDeProducto , price , thumbnail , stock )
+    res.send({ title , descripcion , codigoDeProducto , price , thumbnail , stock  })
+
 })
 
 productosRouter.delete("/:id" , soloAdmins , async ( req , res ) => {

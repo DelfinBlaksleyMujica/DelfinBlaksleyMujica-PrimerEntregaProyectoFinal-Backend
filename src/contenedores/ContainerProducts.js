@@ -25,30 +25,28 @@ class ContenedorProductos {
         }
     }
     
-    async updateProduct ( id , titleAct , priceAct , thumbnailAct  ){
+    async updateProduct ( id , title , descripcion , codigoDeProducto , price , thumbnail , stock   ){
         try{
-            const leer = await fs.readFile( this.path , "utf-8" );
-            const data = JSON.parse( leer );
-            let productoAModificar = data.find( obj => obj.id == id);
-            if (!productoAModificar) {
-                console.log("No existe un producto con dicho id");
-                return null;
-            }else { 
-                const nuevoArray = data.filter( obj => obj.id != id );
-                await fs.writeFile( this.path , JSON.stringify( nuevoArray , null , 2 ) , "utf-8");
-                console.log("Se elimino el elemento con id: " + id);
-                productoAModificar={
-                title : titleAct,
-                price: priceAct,
-                thumbnail: thumbnailAct,
-                id : parseInt(id),
-                estado: "Producto modificado"
-                }
-                nuevoArray.push( productoAModificar );
-                await fs.writeFile( this.path , JSON.stringify( nuevoArray , null , 2 ) , "utf-8");
-                console.log("Se agrego el producto " + JSON.stringify(objeto.title) + " correctamente");
-                return newProduct.id;
+            const leer = await fs.readFile( this.path , "utf-8");
+            const data = JSON.parse(leer)
+            let producto = data.find(producto => producto.id == id );
+            producto = {
+                id: id,
+                title: title,
+                descripcion: descripcion,
+                codigoDeProducto: codigoDeProducto,
+                price: price,
+                thumbnail: thumbnail,
+                stock: stock,
+                timestamp:Date()
             }
+            const nuevoArray = data.filter( producto => producto.id != id);
+            await fs.writeFile( this.path , JSON.stringify( nuevoArray , null , 2 ) , "utf-8" )
+            nuevoArray.push(producto)
+            await fs.writeFile( this.path , JSON.stringify( nuevoArray , null , 2 ) , "utf-8" )
+            console.log(`Se actualizo el producto con id: ${id}`);
+            return id
+            
         }catch ( e ) {
             console.log(e);
         }

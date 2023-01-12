@@ -80,9 +80,6 @@ class ContenedorCart {
         }
     }
 
-    
-
-
     async getById(id){
         try{
             const leer = await fs.readFile(this.path , "utf-8");
