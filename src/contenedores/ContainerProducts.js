@@ -15,7 +15,7 @@ class ContenedorProductos {
             (id = 1)
             :
             (id = data.length + 1);
-            const newProduct = {...objeto , id };
+            const newProduct = {...objeto , id , timestamp: Date() };
             data.push(newProduct);
             await fs.writeFile( this.path , JSON.stringify( data , null , 2 ) , "utf-8");
             console.log("Se agrego el producto " + JSON.stringify(objeto.title) + " correctamente");

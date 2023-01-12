@@ -59,7 +59,7 @@ productosRouter.get( "/:id" , async ( req , res ) => {
 
 productosRouter.post("/" , soloAdmins, ( req , res ) => {
     try {
-        if (req.body.title && req.body.price && req.body.thumbnail) {
+        if (req.body.title && req.body.descripcion && req.body.codigoDeProducto && req.body.price && req.body.thumbnail && req.body.stock ) {
             const obj = req.body;
             ProductService.save(obj);
             console.log( products );
