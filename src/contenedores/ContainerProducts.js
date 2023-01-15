@@ -38,7 +38,8 @@ class ContenedorProductos {
                 price: price,
                 thumbnail: thumbnail,
                 stock: stock,
-                timestamp:Date()
+                timestamp:Date(),
+                estado: "Producto Actualizado"
             }
             const nuevoArray = data.filter( producto => producto.id != id);
             await fs.writeFile( this.path , JSON.stringify( nuevoArray , null , 2 ) , "utf-8" )

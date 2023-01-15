@@ -38,7 +38,14 @@ function soloAdmins( req , res , next ) {
 //Endpoints
 
 productosRouter.get( "/" , async ( req , res ) => {
-    res.send({ productos: products })
+    try {
+        console.log("Se muestran todos los productos correctamente");
+        res.status(200).send({ productos: products });
+    } catch (error) {
+        console.log("Error en el get de productos");
+        res.status(500).send({ message: error.message });
+    }
+    
 })
 
 productosRouter.get( "/:id" , async ( req , res ) => {
@@ -53,6 +60,7 @@ productosRouter.get( "/:id" , async ( req , res ) => {
             return res.status(200).send({ producto : { producto }}) 
         }
 }catch ( error ) {
+    console.log("Error en el get de producto por id");
     res.status(500).send({ message : error.message })
 }
 })
@@ -62,9 +70,10 @@ productosRouter.post("/" , soloAdmins, ( req , res ) => {
         if (req.body.title && req.body.descripcion && req.body.codigoDeProducto && req.body.price && req.body.thumbnail && req.body.stock ) {
             const obj = req.body;
             ProductService.save(obj);
-            console.log( products );
+            console.log("Se agrego un nuevo producto");
             res.status(200).send({ nuevoProducto: obj })
         }
+        console.log("No se completo toda la informacion del producto");
         res.status(200).send({ message:"Debe completar toda la informacion del producto para poder cargarlo" })
     }catch ( error ) {
             res.status(500).send({ message : error.message })
@@ -73,11 +82,27 @@ productosRouter.post("/" , soloAdmins, ( req , res ) => {
 )
 
 productosRouter.put("/:id" , soloAdmins , async ( req , res ) => {
-    const { id } = req.params;
-    const { title , descripcion , codigoDeProducto , price , thumbnail , stock } = req.body;
-    ProductService.updateProduct( id , title , descripcion , codigoDeProducto , price , thumbnail , stock )
-    res.send({ title , descripcion , codigoDeProducto , price , thumbnail , stock  })
-
+    try {
+        if (req.params) {
+            const { id } = req.params;
+            const producto = products.find( obj => obj.id == id );
+            if (!producto) {
+                console.log("No se encuentra producto con tal id en la base para poder actualizar");
+                return res.status(404).send({ message: "No existe producto con tal id en la base, no se peude actualizar"})
+            }
+            if (req.body.title && req.body.descripcion && req.body.codigoDeProducto && req.body.price && req.body.thumbnail && req.body.stock ) {
+                ProductService.deleteById(id)
+                const { title , descripcion , codigoDeProducto , price , thumbnail , stock } = req.body;
+                ProductService.updateProduct( id , title , descripcion , codigoDeProducto , price , thumbnail , stock );
+                console.log("Se actualizo un producto");
+                return res.status(200).send({ message: "Producto actualizado" })
+            }
+            console.log("No se completo toda la informacion del producto");
+            res.status(200).send({ message:"Debe completar toda la informacion del producto para poder cargarlo" })
+        }
+    } catch (error) {
+        res.status(500).send({ message : error.message })
+    }
 })
 
 productosRouter.delete("/:id" , soloAdmins , async ( req , res ) => {
@@ -93,7 +118,7 @@ productosRouter.delete("/:id" , soloAdmins , async ( req , res ) => {
         }
     }catch ( error ) {
             console.log("Error en el get del producto");
-        res.status(500).send({ message : error.message })
+            res.status(500).send({ message : error.message })
     }
 })
 

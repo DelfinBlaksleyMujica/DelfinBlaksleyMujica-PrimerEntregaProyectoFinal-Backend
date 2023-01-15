@@ -39,18 +39,32 @@ function soloAdmins( req , res , next ) {
 //Endpoints
 
 cartRouter.post( "/" , async ( req , res ) => {
-    CartService.createCart();
-    res.send({message: "Carrito Creado"})
+    try {
+        CartService.createCart();
+        res.status(200).send({message: "Carrito Creado"})
+    } catch (error) {
+        console.log("Error en el get del producto");
+        res.status(500).send({ message : error.message })
+    }
+    
 })
 
 cartRouter.delete( "/:id" , async ( req , res ) => {
+    try {
+        if (req.params) {
             const { id } = req.params;
             const carrito = carts.find( carrito => carrito.id == id );
             if (!carrito) {
-                res.send({ message: "No existe tal carrito por lo tanto no puede eliminarse"})
+                return res.status(404).send({ message: "No se encontro tal carrito por lo tanto no puede eliminarse"})
             }
             CartService.deleteCartById(id);
-            res.send({ carritoBorrado: carrito })
+            res.status(200).send({ carritoBorrado: carrito })
+        }
+        } catch (error) {
+            console.log("Error en el delete del producto");
+            res.status(500).send({ message : error.message })
+    }
+            
         }
 )
 
@@ -58,9 +72,17 @@ cartRouter.get("/:id/productos" , async ( req , res ) => {
     try {
         const { id } = req.params;
         const carrito = carts.find( carrito => carrito.id == id );
+        if (!carrito) {
+            console.log("No existe tal carrito");
+            return res.send(404).send({ message: "No se encontro tal carrito"})
+        }
         const productos = carrito.productos;
-        res.send({ productos: productos });
-    } catch (e) {
+        if (productos.length == 0) {
+            console.log("No hay productos en el carrito");
+            return res.status(200).send({ message: "El carrito se encuentra vacio"});
+        }
+        res.status(200).send({ productos: productos });
+    } catch (error) {
         res.status(500).send({ message : error.message })
     }
     
@@ -70,21 +92,43 @@ cartRouter.get("/:id/productos" , async ( req , res ) => {
 
 cartRouter.post( "/:id/productos" , async( req , res ) => {
     try {
-        const { id } = req.params;
-        const producto = products.find( producto => producto.id == id);
-        const numero = carts.length;
-        CartService.addProductToCart( numero , producto )
-        res.send({ message: producto })
+        if (req.params) {
+            const { id } = req.params;
+            const producto = products.find( producto => producto.id == id);
+            if (!producto) {
+                console.log("No existe un producto con tal id en la base");
+                return res.status(404).send({ message: "No se encuentra el producto que se quiere agregar en la base"})
+            }
+            const numero = carts.length;
+            CartService.addProductToCart( numero , producto )
+            res.status(200).send({ message: producto })
+        }
     } catch (error) {
-        res.status(500).send({ message : error.message })
+            res.status(500).send({ message : error.message })
     }
     
 })
 
 cartRouter.delete( "/:id/productos/:id_prod" , async ( req , res ) => {
-    const { id , id_prod } = req.params;
-    CartService.deleteProductById( id , id_prod );
-    res.send({message: "Producto Borrado"})
+    try {
+        if (req.params) {
+            const { id , id_prod } = req.params;
+            const carrito = carts.find( carrito => carrito.id == id );
+            if (!carrito) {
+                console.log("No existe el carrito que se quiere borrar");
+                return res.status(404).send({ message: "No se encontro carrito con tal id"})
+            }
+            const productoEnCarrito = carrito.productos.find( producto => producto.id == id_prod)
+            if (!productoEnCarrito) {
+                console.log("No existe el producto en el carrito");
+                return res.status(404).send({message:"No se encontro producto con tal id"})
+            }
+            CartService.deleteProductById( id , id_prod );
+            res.status(200).send({message: "Producto Borrado"})
+        }
+    } catch (error) {
+        res.status(500).send({ message : error.message })
+    }
 })
 
 
