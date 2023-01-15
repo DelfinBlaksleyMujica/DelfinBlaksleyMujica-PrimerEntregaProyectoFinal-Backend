@@ -6,8 +6,8 @@ const productosRouter = new Router();
 const ContenedorProductos = require("../contenedores/ContainerProducts");
 const ProductService = new ContenedorProductos("../db/dbProductos.json");
 const dbProducts = require("../../db/dbProductos.json");
+const app = require("../server");
 const products = dbProducts;
-
 
 //Funcion Error
 function crearErrorNoEsAdmin( ruta , metodo ) {
@@ -44,8 +44,7 @@ productosRouter.get( "/" , async ( req , res ) => {
     } catch (error) {
         console.log("Error en el get de productos");
         res.status(500).send({ message: error.message });
-    }
-    
+    }  
 })
 
 productosRouter.get( "/:id" , async ( req , res ) => {
