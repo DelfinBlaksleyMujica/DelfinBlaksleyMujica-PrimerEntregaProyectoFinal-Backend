@@ -75,13 +75,14 @@ cartRouter.get("/:id/productos" , async ( req , res ) => {
         if (!carrito) {
             console.log("No existe tal carrito");
             return res.send(404).send({ message: "No se encontro tal carrito"})
-        }
-        const productos = carrito.productos;
-        if (productos.length == 0) {
+        }else{
+            const productos = carrito.productos;
+            if (productos.length == 0) {
             console.log("No hay productos en el carrito");
             return res.status(200).send({ message: "El carrito se encuentra vacio"});
+            }
+            res.status(200).send({ productos: productos });
         }
-        res.status(200).send({ productos: productos });
     } catch (error) {
         res.status(500).send({ message : error.message })
     }
@@ -95,13 +96,17 @@ cartRouter.post( "/:id/productos" , async( req , res ) => {
         if (req.params) {
             const { id } = req.params;
             const producto = products.find( producto => producto.id == id);
+            const numero = carts.length;
             if (!producto) {
                 console.log("No existe un producto con tal id en la base");
                 return res.status(404).send({ message: "No se encuentra el producto que se quiere agregar en la base"})
+            }else if (numero > 0 ) {
+                CartService.addProductToCart( numero , producto )
+                res.status(200).send({ message: producto })
+            }else {
+                console.log("No hay se creo un carrito para agregar los productos");
+                res.status(404).send({ message: "No se encontro carrito para agregar el producto" })
             }
-            const numero = carts.length;
-            CartService.addProductToCart( numero , producto )
-            res.status(200).send({ message: producto })
         }
     } catch (error) {
             res.status(500).send({ message : error.message })

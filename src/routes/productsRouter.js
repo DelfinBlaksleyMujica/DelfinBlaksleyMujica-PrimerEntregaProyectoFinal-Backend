@@ -47,6 +47,10 @@ productosRouter.get( "/" , async ( req , res ) => {
     }  
 })
 
+productosRouter.get("/administrador/productos" , async ( req , res ) => {
+    res.sendFile("C:/Users/delfb/OneDrive/Escritorio/Programacion Backend/Entregas/DelfinBlaksleyMujica-PrimerPreEntregaDeProyectoFinal/public/index.html");
+})
+
 productosRouter.get( "/:id" , async ( req , res ) => {
     try{
         if (req.params) {

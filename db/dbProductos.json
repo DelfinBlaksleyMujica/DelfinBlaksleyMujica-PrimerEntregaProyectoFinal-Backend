@@ -1,3 +1,22 @@
 [
-  
+  {
+    "title": "Remera Rosa",
+    "descripcion": "remera de seda",
+    "codigoDeProducto": 48735486,
+    "price": 181818181,
+    "thumbnail": "www.activa.com.ar",
+    "stock": 5,
+    "id": 1,
+    "timestamp": "Tue Jan 17 2023 17:11:44 GMT-0300 (hora estándar de Argentina)"
+  },
+  {
+    "title": "Remera Negra",
+    "descripcion": "remera de algodon",
+    "codigoDeProducto": 15686235,
+    "price": 1111,
+    "thumbnail": "www.activa.com.ar",
+    "stock": 5,
+    "id": 2,
+    "timestamp": "Tue Jan 17 2023 17:14:33 GMT-0300 (hora estándar de Argentina)"
+  }
 ]
